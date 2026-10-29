@@ -200,7 +200,7 @@ select.sm{font-size:14px;padding:6px 10px;min-width:0}
     <div class="years"><label for="year">ปีที่ดู</label><select id="year"></select></div>
   </header>
   <div class="groups" role="tablist" aria-label="หมวด"><button type="button" class="grp" data-g="explore" id="grp-explore">สำรวจ</button><button type="button" class="grp" data-g="analyze" id="grp-analyze">วิเคราะห์</button><button type="button" class="grp" data-g="tools" id="grp-tools">เครื่องมือ</button></div>
-  <nav class="tabs" aria-label="หน้า"><a href="#" id="tab-overview" data-g="explore">ภาพรวม</a><a href="#map" id="tab-map" data-g="explore">แผนที่จังหวัด</a><a href="#season" id="tab-season" data-g="explore">ฤดูกาล</a><a href="#covid" id="tab-covid" data-g="explore">โควิด</a><a href="#types" id="tab-types" data-g="explore">ประเภทที่พัก</a><a href="#stl" id="tab-stl" data-g="analyze">แยกองค์ประกอบ</a><a href="#cluster" id="tab-cluster" data-g="analyze">กลุ่มจังหวัด</a><a href="#corr" id="tab-corr" data-g="analyze">สหสัมพันธ์</a><a href="#conv" id="tab-conv" data-g="analyze">Convergence</a><a href="#peer" id="tab-peer" data-g="analyze">กลุ่มเทียบเคียง</a><a href="#anomaly" id="tab-anomaly" data-g="analyze">ค่าผิดปกติ</a><a href="#forecast" id="tab-forecast" data-g="analyze">พยากรณ์</a><a href="#opp" id="tab-opp" data-g="tools">โอกาสลงทุน</a><a href="#bench" id="tab-bench" data-g="tools">เทียบกับตลาด</a><a href="#sim" id="tab-sim" data-g="tools">จำลองสถานการณ์</a></nav>
+  <nav class="tabs" aria-label="หน้า"><a href="#" id="tab-overview" data-g="explore">ภาพรวม</a><a href="#story" id="tab-story" data-g="explore">สรุปเรื่องเล่า</a><a href="#map" id="tab-map" data-g="explore">แผนที่จังหวัด</a><a href="#season" id="tab-season" data-g="explore">ฤดูกาล</a><a href="#covid" id="tab-covid" data-g="explore">โควิด</a><a href="#types" id="tab-types" data-g="explore">ประเภทที่พัก</a><a href="#stl" id="tab-stl" data-g="analyze">แยกองค์ประกอบ</a><a href="#cluster" id="tab-cluster" data-g="analyze">กลุ่มจังหวัด</a><a href="#corr" id="tab-corr" data-g="analyze">สหสัมพันธ์</a><a href="#conv" id="tab-conv" data-g="analyze">Convergence</a><a href="#peer" id="tab-peer" data-g="analyze">กลุ่มเทียบเคียง</a><a href="#anomaly" id="tab-anomaly" data-g="analyze">ค่าผิดปกติ</a><a href="#forecast" id="tab-forecast" data-g="analyze">พยากรณ์</a><a href="#opp" id="tab-opp" data-g="tools">โอกาสลงทุน</a><a href="#bench" id="tab-bench" data-g="tools">เทียบกับตลาด</a><a href="#sim" id="tab-sim" data-g="tools">จำลองสถานการณ์</a></nav>
   <div id="body"><p class="note">กำลังโหลดข้อมูล…</p></div>
   <div id="mapview" hidden></div>
   <div id="seasonview" hidden></div>
@@ -213,6 +213,7 @@ select.sm{font-size:14px;padding:6px 10px;min-width:0}
   <div id="benchview" hidden></div>
   <div id="simview" hidden></div>
   <div id="stlview" hidden></div>
+  <div id="storyview" hidden></div>
   <div id="corrview" hidden></div>
   <div id="convview" hidden></div>
   <div id="peerview" hidden></div>
@@ -239,7 +240,7 @@ function parseCSV(t){
 const num=v=>{const n=parseFloat(v);return Number.isFinite(n)?n:null};
 
 let DATA=[],RAW=[],YEARS=[],AGG={},sel=2025;
-const VIEWS={'':['overview','#body'],'#map':['map','#mapview'],'#season':['season','#seasonview'],'#covid':['covid','#covidview'],'#types':['types','#typesview'],'#cluster':['cluster','#clusterview'],'#anomaly':['anomaly','#anomalyview'],'#opp':['opp','#oppview'],'#forecast':['forecast','#forecastview'],'#bench':['bench','#benchview'],'#sim':['sim','#simview'],'#stl':['stl','#stlview'],'#corr':['corr','#corrview'],'#conv':['conv','#convview'],'#peer':['peer','#peerview']};
+const VIEWS={'':['overview','#body'],'#map':['map','#mapview'],'#season':['season','#seasonview'],'#covid':['covid','#covidview'],'#types':['types','#typesview'],'#cluster':['cluster','#clusterview'],'#anomaly':['anomaly','#anomalyview'],'#opp':['opp','#oppview'],'#forecast':['forecast','#forecastview'],'#bench':['bench','#benchview'],'#sim':['sim','#simview'],'#stl':['stl','#stlview'],'#story':['story','#storyview'],'#corr':['corr','#corrview'],'#conv':['conv','#convview'],'#peer':['peer','#peerview']};
 document.addEventListener('click',e=>{const b=e.target.closest('.grp');if(!b)return;const f=document.querySelector('.tabs a[data-g="'+b.dataset.g+'"]');location.hash=f.getAttribute('href')==='#'?'':f.getAttribute('href');if(!location.hash)route()});
 function route(){
   const v=(VIEWS[location.hash]||VIEWS[''])[0];
@@ -248,7 +249,7 @@ function route(){
   const gOf=$('#tab-'+v).dataset.g;
   document.querySelectorAll('.tabs a').forEach(a=>a.hidden=a.dataset.g!==gOf);
   document.querySelectorAll('.grp').forEach(b=>b.setAttribute('aria-selected',b.dataset.g===gOf));
-  const open={map:'openMap',season:'openSeason',covid:'openCovid',types:'openTypes',cluster:'openCluster',anomaly:'openAnomaly',opp:'openOpp',forecast:'openForecast',bench:'openBench',sim:'openSim',stl:'openStl',corr:'openCorr',conv:'openConv',peer:'openPeer'}[v];
+  const open={map:'openMap',season:'openSeason',covid:'openCovid',types:'openTypes',cluster:'openCluster',anomaly:'openAnomaly',opp:'openOpp',forecast:'openForecast',bench:'openBench',sim:'openSim',stl:'openStl',story:'openStory',corr:'openCorr',conv:'openConv',peer:'openPeer'}[v];
   if(open&&window[open])window[open]();
 }
 addEventListener('hashchange',route);
@@ -2035,6 +2036,98 @@ function eDraw(){
   clsE('#e-up tr.pr,#e-dn tr.pr').forEach(t=>t.onclick=()=>{ES.p=t.dataset.p;eDraw();scrollTo({top:0,behavior:'smooth'})});
 }
 window.openPeer=function(){if(!RAW.length)return;init();if(!eB){eBuild();eB=true}eDraw()};
+})();
+</script>
+<script>
+/* ---------- สรุปเรื่องเล่า: ข้อความและตัวเลขทุกตัวคำนวณจากข้อมูลตอนเปิดหน้า ---------- */
+(function(){
+const {qv,A,init,f0,fn}=HX;
+const Q4=['Q1','Q2','Q3','Q4'];let built=false;
+const pc=(x,d=0)=>(x>=0?'+':'')+fn(x*100,d)+'%';
+const mil=x=>fn(x/1e6,1)+' ล้านคน';
+const ql=(Y0,i)=>`Q${i%4+1} ${Y0+Math.floor(i/4)}`;
+function natQ(){
+  const n=YEARS.length*4,v=new Array(n).fill(null);
+  YEARS.forEach((y,yi)=>Q4.forEach((q,qi)=>{let t=0,c=0;
+    for(const p of HX.PROVS){const r=HX.byPY[p+'|'+y];let x=qv(r,q,'GoA','');
+      if(x===null&&q==='Q1'){const tot=qv(r,'Q1-4','GoA','');const o=['Q2','Q3','Q4'].map(k=>qv(r,k,'GoA',''));if(tot!==null&&o.every(z=>z!==null))x=tot-o[0]-o[1]-o[2]}
+      if(x!==null){t+=x;c++}}
+    v[yi*4+qi]=c?t:null}));
+  return v}
+function compute(){
+  const Y0=YEARS[0],L=YEARS[YEARS.length-1],P=HX.PROVS,nat=natQ();
+  const ann=YEARS.map(y=>A(P,'',y,'GoA'));
+  let ci=-1,cr=Infinity;nat.forEach((x,i)=>{if(i>=4&&x!=null&&nat[i-4]!=null&&x/nat[i-4]<cr){cr=x/nat[i-4];ci=i}});
+  const ty=Y0+Math.floor(ci/4);
+  const by=Math.max(Y0,ty-1),bi=(by-Y0)*4;
+  const ratio=nat.map((x,i)=>x==null||i<bi+4||nat[bi+i%4]==null?null:x/nat[bi+i%4]);
+  let ti=-1;ratio.forEach((x,i)=>{if(x!=null&&(ti<0||x<ratio[ti]))ti=i});
+  const troughR=ratio[ti];
+  let st=-1;for(let i=bi+4;i<=ti;i++)if(ratio[i]!=null&&ratio[i]<.8){st=i;break}
+  let rc=-1;for(let i=ti+1;i<nat.length;i++)if(ratio[i]!=null&&ratio[i]>=1){rc=i;break}
+  const g=(p,y,m)=>A([p],'',y,m);
+  const rows=P.map(p=>{const gb=g(p,by,'GoA'),gl=g(p,L,'GoA'),rb=g(p,by,'Rm'),rl=g(p,L,'Rm'),ob=g(p,by,'OR'),ol=g(p,L,'OR');
+    const q=Q4.map(k=>qv(HX.byPY[p+'|'+by],k,'GoA','')),q2=Q4.map(k=>qv(HX.byPY[p+'|'+L],k,'GoA',''));
+    const pk=a=>a.some(z=>z==null)?null:a.indexOf(Math.max(...a));
+    return {p,gb,gl,rb,rl,ob,ol,rec:gb>0&&gl>0?gl/gb:null,sup:rb>0&&rl>0?rl/rb:null,dem:gb>0&&gl>0?gl/gb:null,dOR:ob!=null&&ol!=null?ol-ob:null,pkb:pk(q),pkl:pk(q2)}});
+  let bad=0;for(const r of RAW)for(const q of Q4){for(const [m,lim] of [['OR',100],['Day',60],['P/R',30]]){const v=parseFloat(r[`${q}_${m}`]);if(isFinite(v)&&v>lim)bad++}}
+  return {Y0,L,nat,ann,ti,ty,by,bi,ratio,troughR,st,rc,rows,bad}
+}
+function bars(items,max,fmt){return items.map(o=>`<div style="display:grid;grid-template-columns:minmax(90px,150px) 1fr 52px;gap:8px;align-items:center;margin:5px 0;font-size:13px"><span>${o.l}</span><span style="background:var(--grid);border-radius:3px;height:14px"><i style="display:block;height:14px;border-radius:3px;background:${o.c||'var(--accent)'};width:${Math.max(1,o.v/max*100)}%"></i></span><b style="text-align:right">${fmt?fmt(o.v):o.v}</b></div>`).join('')}
+function chap(n,title,lead,body,link,lt){return `<section class="card story"><div style="display:flex;gap:12px;align-items:baseline"><span style="font-size:13px;font-weight:700;color:var(--accent);min-width:24px">${n}</span><h2 style="margin:0">${title}</h2></div><p style="margin:10px 0 12px;font-size:16px;line-height:1.7;color:var(--ink)">${lead}</p>${body}${link?`<p style="margin:12px 0 0;font-size:13px"><a href="${link}" style="color:var(--accent)">${lt} →</a></p>`:''}</section>`}
+function annChart(d){
+  const W=860,H=210,m={l:48,r:12,t:14,b:26},iw=W-m.l-m.r,ih=H-m.t-m.b,mx=Math.max(...d.ann)*1.1,n=YEARS.length,bw=iw/n*.62;let s='';
+  const bv=d.ann[YEARS.indexOf(d.by)];
+  for(let k=0;k<=4;k++){const v=mx*k/4,y=m.t+ih-ih*k/4;s+=`<line x1="${m.l}" x2="${W-m.r}" y1="${y}" y2="${y}" stroke="var(--grid)"/><text x="${m.l-6}" y="${y+4}" text-anchor="end" style="font-size:11px">${fn(v/1e6,0)} ล.</text>`}
+  YEARS.forEach((y,i)=>{const x=m.l+iw*(i+.5)/n,h=ih*d.ann[i]/mx,cov=y>d.by&&d.ann[i]<bv*.9;
+    s+=`<rect class="ab" data-i="${i}" x="${x-bw/2}" y="${m.t+ih-h}" width="${bw}" height="${h}" rx="2" fill="${cov?'var(--ink3)':'var(--accent)'}" fill-opacity="${cov?.6:.9}"/><text x="${x}" y="${H-8}" text-anchor="middle" style="font-size:11px">${y}</text>`});
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="ผู้เข้าพักรายปี" style="overflow:visible">${s}</svg>`}
+function ratioChart(d){
+  const W=860,H=250,m={l:48,r:14,t:16,b:26},iw=W-m.l-m.r,ih=H-m.t-m.b,n=d.nat.length,X=i=>m.l+iw*i/(n-1);
+  const vals=d.ratio.filter(z=>z!=null),mx=Math.max(1.25,...vals)*1.02,Y=v=>m.t+ih-ih*v/mx;let s='';
+  [0,.25,.5,.75,1,1.25].forEach(v=>{if(v>mx)return;s+=`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="${v===1?'var(--ink3)':'var(--grid)'}" ${v===1?'stroke-dasharray="4 3"':''}/><text x="${m.l-6}" y="${Y(v)+4}" text-anchor="end" style="font-size:11px">${Math.round(v*100)}%</text>`});
+  if(d.st>=0&&d.rc>=0)s+=`<rect x="${X(d.st)}" y="${m.t}" width="${X(d.rc)-X(d.st)}" height="${ih}" fill="var(--covid)"/>`;
+  let p='';d.ratio.forEach((v,i)=>{if(v!=null)p+=(p&&d.ratio[i-1]!=null?'L':'M')+X(i)+','+Y(v)});
+  s+=`<path d="${p}" fill="none" stroke="var(--accent)" stroke-width="2.6"/>`;
+  const pt=(i,c,t,dy)=>`<circle cx="${X(i)}" cy="${Y(d.ratio[i])}" r="5" fill="${c}" stroke="var(--panel)" stroke-width="2"/><text x="${X(i)}" y="${Y(d.ratio[i])+dy}" text-anchor="middle" style="font-size:12px;font-weight:600;fill:var(--ink)">${t}</text>`;
+  s+=`<circle cx="${X(d.ti)}" cy="${Y(d.ratio[d.ti])}" r="5" fill="var(--d1)" stroke="var(--panel)" stroke-width="2"/><text x="${X(d.ti)+10}" y="${Y(d.ratio[d.ti])-6}" style="font-size:12px;font-weight:600;fill:var(--ink)">ต่ำสุด ${fn(d.troughR*100,0)}%</text>`;
+  if(d.rc>=0)s+=pt(d.rc,'var(--accent)',`ครบ 100%`,-12);
+  for(let y=d.Y0;y<=d.L;y+=2)s+=`<text x="${X((y-d.Y0)*4)}" y="${H-8}" style="font-size:11px">${y}</text>`;
+  for(let i=0;i<n;i++)if(d.ratio[i]!=null)s+=`<rect class="rh" data-i="${i}" x="${X(i)-iw/(n-1)/2}" y="0" width="${iw/(n-1)}" height="${H-20}" fill="transparent"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="ผู้เข้าพักเทียบปีฐานรายไตรมาส" style="overflow:visible">${s}</svg>`}
+function build(){
+  const d=compute(),{L,by,rows,Y0}=d;
+  const bI=YEARS.indexOf(by),lI=YEARS.indexOf(L);
+  const gb=d.ann[bI],gl=d.ann[lI],first=d.ann[0],cagr=by>Y0?Math.pow(gb/first,1/(by-Y0))-1:0;
+  const ok=rows.filter(r=>r.rec!=null),rec=ok.filter(r=>r.rec>=1).length;
+  const slow=[...ok].sort((a,b)=>a.rec-b.rec).slice(0,3),fast=[...ok].sort((a,b)=>b.rec-a.rec).slice(0,3);
+  const sd=rows.filter(r=>r.sup!=null&&r.dem!=null),rSD=r=>r.dem/r.sup;
+  const over=sd.filter(r=>rSD(r)<.9),tight=sd.filter(r=>rSD(r)>1.1),bal=sd.length-over.length-tight.length;
+  const rmB=A(HX.PROVS,'',by,'Rm'),rmL=A(HX.PROVS,'',L,'Rm');
+  const pkCount=k=>[0,1,2,3].map(q=>rows.filter(r=>r[k]===q).length),pb=pkCount('pkb'),pl=pkCount('pkl'),nb=pb.reduce((a,b)=>a+b),nl=pl.reduce((a,b)=>a+b);
+  const topQ=a=>a.indexOf(Math.max(...a));
+  const dor=rows.filter(r=>r.dOR!=null).sort((a,b)=>b.dOR-a.dOR),orB=A(HX.PROVS,'',by,'OR'),orL=A(HX.PROVS,'',L,'OR');
+  const recQ=d.rc>=0&&d.st>=0?d.rc-d.st:null,recQ2=d.rc>=0?d.rc-d.ti:null;
+  const lnk=(h,t)=>`<a href="${h}" style="color:var(--accent)">${t}</a>`;
+  const bins=[['ต่ำกว่า 80% ของปีฐาน',r=>r.rec<.8,'var(--d1)'],['80–100%',r=>r.rec>=.8&&r.rec<1,'var(--d3)'],['100–120%',r=>r.rec>=1&&r.rec<1.2,'var(--d6)'],['เกิน 120%',r=>r.rec>=1.2,'var(--d7)']];
+  const mxPk=Math.max(...pb,...pl);
+  $('#storyview').innerHTML=`
+  <div class="card"><h2 style="font-size:22px">เรื่องของที่พักไทย ${Y0}–${L}</h2><p class="n" style="margin:6px 0 0;font-size:14px;line-height:1.7">สรุปเป็น 7 ตอน อ่านจบในไม่กี่นาที ตัวเลขและประโยคทุกตัวคำนวณจากไฟล์ข้อมูลตอนเปิดหน้า ปีฐานก่อนโควิดในหน้านี้คือ <b>${by}</b> (หาจากจุดที่ผู้เข้าพักตกต่ำสุดแล้วถอยไป 1 ปี) และปีล่าสุดคือ <b>${L}</b> ทุกตอนมีลิงก์ไปแท็บที่ลงรายละเอียด</p></div>
+  <section class="kpis"><div class="kpi"><div class="l">ผู้เข้าพักปี ${L}</div><div class="v">${mil(gl)}</div><div class="d">${pc(gl/gb-1,1)} เทียบปี ${by}</div></div>
+  <div class="kpi"><div class="l">จุดต่ำสุดของโควิด</div><div class="v">${fn(d.troughR*100,0)}%</div><div class="d">ของไตรมาสเดียวกันปี ${by} (${ql(Y0,d.ti)})</div></div>
+  <div class="kpi"><div class="l">กลับมาครบ 100%</div><div class="v">${d.rc>=0?ql(Y0,d.rc):'ยังไม่ถึง'}</div><div class="d">${recQ2!=null?`${recQ2} ไตรมาสหลังจุดต่ำสุด`:'ภาพรวมทั้งประเทศ'}</div></div>
+  <div class="kpi"><div class="l">จังหวัดที่ฟื้นเกินปีฐาน (รายปี)</div><div class="v">${rec} / ${ok.length}</div><div class="d">ผู้เข้าพักปี ${L} ≥ ปี ${by}</div></div></section>
+  ${chap('1','ก่อนโควิด: โตสม่ำเสมอ',`ผู้เข้าพักทั้งประเทศโตจาก <b>${mil(first)}</b> ในปี ${Y0} เป็น <b>${mil(gb)}</b> ในปี ${by} เฉลี่ย <b>${pc(cagr,1)} ต่อปี</b> และขึ้นลงตามฤดูกาลเดิมทุกปี`,`<div>${annChart(d)}</div>`,'#stl','ดูการแยกแนวโน้มกับฤดูกาล')}
+  ${chap('2','โควิด: ตกลงไปเท่าไร',`ผู้เข้าพักเริ่มต่ำกว่า 80% ของปีฐานตั้งแต่ <b>${d.st>=0?ql(Y0,d.st):'–'}</b> และลงต่ำสุดที่ <b>${ql(Y0,d.ti)}</b> เหลือเพียง <b>${fn(d.troughR*100,0)}%</b> ของไตรมาสเดียวกันในปี ${by} หรือหายไป ${fn((1-d.troughR)*100,0)} ใน 100 คน`,`<div>${ratioChart(d)}</div><p class="n">เส้นคือผู้เข้าพักแต่ละไตรมาสเทียบไตรมาสเดียวกันของปี ${by} (เทียบแบบนี้เพื่อไม่ให้ฤดูกาลมาปน) แถบสีคือช่วงตั้งแต่ตกต่ำกว่า 80% จนกลับมาครบ 100%</p>`,'#covid','ดูผลกระทบและการฟื้นตัวรายจังหวัด')}
+  ${chap('3','การฟื้นตัว: ทั้งประเทศกลับมาก่อน แต่ไม่เท่ากันทุกจังหวัด',d.rc>=0?`ทั้งประเทศกลับมาที่ระดับปีฐานใน <b>${ql(Y0,d.rc)}</b> ใช้เวลา <b>${recQ2} ไตรมาส</b>นับจากจุดต่ำสุด${recQ!=null?` (${recQ} ไตรมาสนับจากเริ่มตก)`:''} เมื่อดูรายปี ปี ${L} มี <b>${rec} จาก ${ok.length} จังหวัด</b>ที่ผู้เข้าพักไม่ต่ำกว่าปี ${by} ฟื้นแรงที่สุดคือ ${fast.map(r=>`${r.p} (${pc(r.rec-1)})`).join(', ')} ส่วนที่ยังตามหลังคือ ${slow.map(r=>`${r.p} (${pc(r.rec-1)})`).join(', ')}`:`ภาพรวมทั้งประเทศยังไม่กลับมาครบระดับปีฐาน`,`<div>${bars(bins.map(b=>({l:b[0],v:ok.filter(b[1]).length,c:b[2]})),ok.length)}</div><p class="n">จำนวนจังหวัดตามระดับผู้เข้าพักปี ${L} เทียบปี ${by}</p>`,'#covid','ดูรายจังหวัดว่าใช้กี่ไตรมาส')}
+  ${chap('4','ฤดูกาล: ยังมีไตรมาสไฮซีซันที่ชัดเจน',`ในปี ${by} จังหวัดส่วนใหญ่ (<b>${pb[topQ(pb)]} จาก ${nb}</b>) มีผู้เข้าพักสูงสุดใน <b>Q${topQ(pb)+1}</b> ส่วนปี ${L} เป็น <b>Q${topQ(pl)+1}</b> (<b>${pl[topQ(pl)]} จาก ${nl}</b>) ${topQ(pb)===topQ(pl)?'จังหวะฤดูกาลหลักยังคงเดิมหลังโควิด':`ไตรมาสสูงสุดย้ายจาก Q${topQ(pb)+1} ไป Q${topQ(pl)+1} แต่ Q${topQ(pb)+1} ก็ยังมี ${pl[topQ(pb)]} จังหวัด ภาพจึงเป็นการกระจายตัวมากขึ้นมากกว่าการสลับขั้วเด็ดขาด`}`,`<div class="cols2" style="margin:0"><div><p class="n" style="margin:0 0 6px"><b>ปี ${by}</b> จำนวนจังหวัดที่สูงสุดในไตรมาสนั้น</p>${bars(pb.map((v,i)=>({l:'Q'+(i+1),v,c:i===topQ(pb)?'var(--accent)':'var(--ink3)'})),mxPk)}</div><div><p class="n" style="margin:0 0 6px"><b>ปี ${L}</b></p>${bars(pl.map((v,i)=>({l:'Q'+(i+1),v,c:i===topQ(pl)?'var(--accent)':'var(--ink3)'})),mxPk)}</div></div>`,'#season','ดู Heatmap และดัชนีฤดูกาล')}
+  ${chap('5','ห้องพักกับผู้เข้าพัก: โตไม่เท่ากัน',`ระหว่างปี ${by} ถึง ${L} ห้องพักทั้งประเทศ${rmL>=rmB?'เพิ่ม':'ลด'} <b>${pc(rmL/rmB-1,1)}</b> ขณะที่ผู้เข้าพัก${gl>=gb?'เพิ่ม':'ลด'} <b>${pc(gl/gb-1,1)}</b> ${rmL/rmB>gl/gb?'ห้องพักโตเร็วกว่าผู้เข้าพัก ภาพรวมจึงล้นตลาดมากขึ้น':'ผู้เข้าพักโตเร็วกว่าห้องพัก ตลาดตึงตัวขึ้น'} เมื่อแยกรายจังหวัด <b>${over.length} จังหวัด</b>ห้องล้นตลาด (ผู้เข้าพักโตช้ากว่าห้องเกิน 10%) <b>${tight.length} จังหวัด</b>ตึงตัว และ ${bal} จังหวัดใกล้เคียงกัน`,`<div>${bars([{l:'ห้องล้นตลาด',v:over.length,c:'var(--d2)'},{l:'สมดุล',v:bal,c:'var(--d4)'},{l:'ตลาดตึงตัว',v:tight.length,c:'var(--d6)'}],sd.length)}</div><p class="n">ล้นตลาดมากที่สุด: ${[...over].sort((a,b)=>rSD(a)-rSD(b)).slice(0,3).map(r=>r.p).join(', ')||'–'} · ตึงตัวมากที่สุด: ${[...tight].sort((a,b)=>rSD(b)-rSD(a)).slice(0,3).map(r=>r.p).join(', ')||'–'}</p>`,'#cluster','ดูคลัสเตอร์และ Supply-Demand Gap')}
+  ${chap('6','ผู้ชนะและผู้ตามหลัง',`อัตราเข้าพักทั้งประเทศ${orL>=orB?'เพิ่ม':'ลด'}จาก <b>${fn(orB,1)}%</b> เป็น <b>${fn(orL,1)}%</b> จังหวัดที่อัตราเข้าพักเพิ่มมากที่สุดเทียบปี ${by} คือ ${dor.slice(0,3).map(r=>`${r.p} (${(r.dOR>=0?'+':'')+fn(r.dOR,1)} จุด)`).join(', ')} ส่วนที่ลดมากที่สุดคือ ${dor.slice(-3).reverse().map(r=>`${r.p} (${fn(r.dOR,1)} จุด)`).join(', ')}`,`<p class="n">อ่านคู่กับ ${lnk('#conv','Convergence')} (จังหวัดที่ตามหลังไล่ทันไหม) และ ${lnk('#peer','กลุ่มเทียบเคียง')} (เทียบกับจังหวัดที่ลักษณะคล้ายกัน)</p>`,'#opp','ดูคะแนนโอกาสลงทุนรายจังหวัด')}
+  ${chap('7','ข้อควรระวังเรื่องข้อมูล',`ไฟล์นี้มีเซลล์ที่ค่าเกินขอบเขตสมเหตุสมผล (อัตราเข้าพักเกิน 100%, วันพักเกิน 60, คนต่อห้องเกิน 30) จำนวน <b>${d.bad} เซลล์</b> ซึ่งถูกตัดออกจากการคำนวณ นอกจากนี้ต้นทางเปลี่ยนเกณฑ์แยกโรงแรมกับรีสอร์ทช่วงปี 2021 จึงควรเทียบข้ามปีด้วยกลุ่มรวม "โรงแรม+รีสอร์ท"`,'','#anomaly','ดูรายการค่าผิดปกติทั้งหมด')}`;
+  document.querySelectorAll('#storyview .ab').forEach(r=>{const i=+r.dataset.i;r.onmousemove=e=>showTip(e,`<b>${YEARS[i]}</b><br>${mil(d.ann[i])}`);r.onmouseleave=hideTip});
+  document.querySelectorAll('#storyview .rh').forEach(r=>{const i=+r.dataset.i;r.onmousemove=e=>showTip(e,`<b>${ql(Y0,i)}</b><br>${f0(d.nat[i])} คน<br>${fn(d.ratio[i]*100,0)}% ของปี ${by}`);r.onmouseleave=hideTip});
+}
+window.openStory=function(){if(!RAW.length)return;init();if(!built){build();built=true}};
 })();
 </script>
 
