@@ -1,6 +1,6 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <meta charset="utf-8">
-<title>ที่พักไทย 2013–2025</title>
+<title>DADS5002 การหาช่องว่างในตลาดที่พัก จับคู่จังหวัดที่ใช่กับไลฟ์สไตล์โรงแรมที่เข้ากัน จากข้อมูลด้านการท่องเที่ยว</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=Prompt:wght@500;600&display=swap">
 <style>
@@ -194,14 +194,13 @@ select.sm{font-size:14px;padding:6px 10px;min-width:0}
 <div class="wrap" id="app">
   <header>
     <div>
-      <h1>ที่พักไทย 2013–2025</h1>
+      <h1>DADS5002 การหาช่องว่างในตลาดที่พัก จับคู่จังหวัดที่ใช่กับไลฟ์สไตล์โรงแรมที่เข้ากัน จากข้อมูลด้านการท่องเที่ยว</h1>
       <p class="sub">สถานการณ์โรงแรม รีสอร์ท และเกสท์เฮ้าส์ทั่วประเทศ 77 จังหวัด รวมช่วงโควิด-19 ที่นักท่องเที่ยวหายไปเกือบหมด</p>
     </div>
-    <div class="years"><label for="year">ปีที่ดู</label><select id="year"></select></div>
   </header>
   <div class="groups" role="tablist" aria-label="หมวด"><button type="button" class="grp" data-g="explore" id="grp-explore">สำรวจ</button><button type="button" class="grp" data-g="analyze" id="grp-analyze">วิเคราะห์</button><button type="button" class="grp" data-g="tools" id="grp-tools">เครื่องมือ</button></div>
   <nav class="tabs" aria-label="หน้า"><a href="#" id="tab-overview" data-g="explore">ภาพรวม</a><a href="#story" id="tab-story" data-g="explore">สรุปเรื่องเล่า</a><a href="#map" id="tab-map" data-g="explore">แผนที่จังหวัด</a><a href="#season" id="tab-season" data-g="explore">ฤดูกาล</a><a href="#covid" id="tab-covid" data-g="explore">โควิด</a><a href="#types" id="tab-types" data-g="explore">ประเภทที่พัก</a><a href="#stl" id="tab-stl" data-g="analyze">แยกองค์ประกอบ</a><a href="#cluster" id="tab-cluster" data-g="analyze">กลุ่มจังหวัด</a><a href="#corr" id="tab-corr" data-g="analyze">สหสัมพันธ์</a><a href="#conv" id="tab-conv" data-g="analyze">Convergence</a><a href="#peer" id="tab-peer" data-g="analyze">กลุ่มเทียบเคียง</a><a href="#anomaly" id="tab-anomaly" data-g="analyze">ค่าผิดปกติ</a><a href="#forecast" id="tab-forecast" data-g="analyze">พยากรณ์</a><a href="#opp" id="tab-opp" data-g="tools">โอกาสลงทุน</a><a href="#bench" id="tab-bench" data-g="tools">เทียบกับตลาด</a><a href="#sim" id="tab-sim" data-g="tools">จำลองสถานการณ์</a></nav>
-  <div id="body"><p class="note">กำลังโหลดข้อมูล…</p></div>
+  <div id="body"><div class="years" style="margin:4px 0 14px;max-width:160px"><label for="year">ปีที่ดู</label><select id="year"></select></div><div id="ovbody"><p class="note">กำลังโหลดข้อมูล…</p></div></div>
   <div id="mapview" hidden></div>
   <div id="seasonview" hidden></div>
   <div id="covidview" hidden></div>
@@ -245,7 +244,6 @@ document.addEventListener('click',e=>{const b=e.target.closest('.grp');if(!b)ret
 function route(){
   const v=(VIEWS[location.hash]||VIEWS[''])[0];
   for(const k in VIEWS){const [n,sel]=VIEWS[k];$(sel).hidden=n!==v;const a=$('#tab-'+n);if(n===v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')}
-  $('.years').hidden=v!=='overview';
   const gOf=$('#tab-'+v).dataset.g;
   document.querySelectorAll('.tabs a').forEach(a=>a.hidden=a.dataset.g!==gOf);
   document.querySelectorAll('.grp').forEach(b=>b.setAttribute('aria-selected',b.dataset.g===gOf));
@@ -338,7 +336,7 @@ function render(){
   const a=AGG[sel],p=AGG[YEARS[YEARS.indexOf(sel)-1]];
   const peak=Math.max(...YEARS.filter(y=>y<2020).map(y=>AGG[y].goa));
   const vs=sel>=2020?`${pct(a.goa/AGG[2019].goa*100,0)}% ของปี ${2019}`:'';
-  $('#body').innerHTML=`
+  $('#ovbody').innerHTML=`
   <section class="kpis">
     <div class="kpi"><div class="l">สถานประกอบการ</div><div class="v">${fmt(a.noa)}<small>แห่ง</small></div><div class="d">${p?delta(a.noa,p.noa):'ปีแรกของข้อมูล'}</div></div>
     <div class="kpi"><div class="l">ห้องพักรวม</div><div class="v">${fmt(a.rm)}<small>ห้อง</small></div><div class="d">${p?delta(a.rm,p.rm):'&nbsp;'}</div></div>
