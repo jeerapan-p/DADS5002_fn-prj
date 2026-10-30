@@ -68,6 +68,7 @@ th,td{padding:5px 8px;text-align:right;border-bottom:1px solid var(--line)}th:fi
 .grp[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 .grp:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .tabs a[hidden]{display:none}
+#y-map .dot{cursor:pointer}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
 .tabs a{padding:8px 12px;color:var(--ink2);text-decoration:none;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
 .tabs a[aria-current="page"]{color:var(--accent);border-color:var(--accent)}
@@ -2291,13 +2292,13 @@ function drawProv(){
 function drawMap(p){
   const o=LS.by[p],k=SS.show,kk=KI[k],pts=o.items.filter(it=>isFinite(it.lat)&&isFinite(it.lon));
   const on=it=>it.type===k||it.tags.includes(k);
-  const P=pts.map(it=>({x:it.lon,y:it.lat,c:on(it)?'var(--accent)':'var(--ink3)',o:on(it)?.95:.35,r:on(it)?5.5:3.5,name:it.name,tip:`<b>${it.name}</b><br>${it.d||''}${it.d?' · ':''}${(KI[it.type]||{n:FILT.n}).n}${it.tags.length?'<br>'+it.tags.map(t=>KI[t].n).join(', '):''}`}));
+  const P=pts.map(it=>({x:it.lon,y:it.lat,c:on(it)?'var(--accent)':'var(--ink3)',o:on(it)?.95:.35,r:on(it)?5.5:3.5,name:it.name,url:it.url,tip:`<b>${it.name}</b><br>${it.d||''}${it.d?' · ':''}${(KI[it.type]||{n:FILT.n}).n}${it.tags.length?'<br>'+it.tags.map(t=>KI[t].n).join(', '):''}${it.url?'<br><i>คลิกเพื่อเปิดหน้าเว็บของที่พัก</i>':''}`}));
   if(!P.length){$('#y-map').innerHTML='<p class="n">ไม่มีพิกัด</p>';return}
   const xs=P.map(q=>q.x).sort((a,b)=>a-b),ys=P.map(q=>q.y).sort((a,b)=>a-b),qx=(a,t)=>a[Math.floor((a.length-1)*t)];
   let x0=qx(xs,.01),x1=qx(xs,.99),y0=qx(ys,.01),y1=qx(ys,.99);if(x1-x0<.02){x0-=.01;x1+=.01}if(y1-y0<.02){y0-=.01;y1+=.01}
   const px=(x1-x0)*.06,py=(y1-y0)*.06,tk=(a,b)=>Array.from({length:5},(_,i)=>a+(b-a)*i/4);
   const inb=P.filter(q=>q.x>=x0-px&&q.x<=x1+px&&q.y>=y0-py&&q.y<=y1+py),n=P.filter(q=>q.c==='var(--accent)').length;
-  HX.scatter($('#y-map'),inb,{h:400,x0:x0-px,x1:x1+px,y0:y0-py,y1:y1+py,xt:tk(x0,x1),yt:tk(y0,y1),xf:v=>fn(v,2),yf:v=>fn(v,2),xl:'ลองจิจูด',yl:'ละติจูด',aria:'ตำแหน่งที่พักในจังหวัด'});
+  HX.scatter($('#y-map'),inb,{h:400,x0:x0-px,x1:x1+px,y0:y0-py,y1:y1+py,xt:tk(x0,x1),yt:tk(y0,y1),xf:v=>fn(v,2),yf:v=>fn(v,2),xl:'ลองจิจูด',yl:'ละติจูด',aria:'ตำแหน่งที่พักในจังหวัด',click:q=>{if(q.url&&/^https?:\/\//.test(q.url))window.open(q.url,'_blank','noopener')}});
   $('#y-mn').textContent=`${kk.n}: ${n} จาก ${P.length} แห่ง (จุดสีเข้ม) · แสดงช่วงพิกัดที่ครอบคลุม 98% ของที่พัก`;
   const D={};o.items.forEach(it=>{const d=it.d||'(ไม่ระบุอำเภอ)';(D[d]=D[d]||{n:0,s:0}).n++;if(on(it))D[d].s++});
   const dl=Object.entries(D).sort((a,b)=>b[1].n-a[1].n).slice(0,10);
