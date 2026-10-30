@@ -1,0 +1,195 @@
+﻿kind,group_key,group_name,keyword,whole,except,geo
+type,hostel,โฮสเทล,โฮสเทล,0,,0
+type,hostel,โฮสเทล,hostel,0,,0
+type,hostel,โฮสเทล,poshtel,0,,0
+type,hostel,โฮสเทล,โพสเทล,0,,0
+type,homestay,โฮมสเตย์,โฮมสเตย์,0,,0
+type,homestay,โฮมสเตย์,homestay,0,,0
+type,homestay,โฮมสเตย์,โฮมสเตย,0,,0
+type,guest,เกสท์เฮ้าส์,เกสท์เฮ้าส์,0,,0
+type,guest,เกสท์เฮ้าส์,เกสต์เฮ้าส์,0,,0
+type,guest,เกสท์เฮ้าส์,เกสท์เฮาส์,0,,0
+type,guest,เกสท์เฮ้าส์,เกสต์เฮาส์,0,,0
+type,guest,เกสท์เฮ้าส์,guest house,0,,0
+type,guest,เกสท์เฮ้าส์,guesthouse,0,,0
+type,apt,อพาร์ทเมนท์/เซอร์วิส,อพาร์ท,0,,0
+type,apt,อพาร์ทเมนท์/เซอร์วิส,อพาร์ต,0,,0
+type,apt,อพาร์ทเมนท์/เซอร์วิส,apartment,0,,0
+type,apt,อพาร์ทเมนท์/เซอร์วิส,serviced,0,,0
+type,apt,อพาร์ทเมนท์/เซอร์วิส,เซอร์วิส,0,,0
+type,resort,รีสอร์ท,รีสอร์ท,0,,0
+type,resort,รีสอร์ท,รีสอร์ต,0,,0
+type,resort,รีสอร์ท,resort,0,,0
+type,villa,วิลล่า,วิลล่า,0,,0
+type,villa,วิลล่า,villa,0,,0
+type,bungalow,บังกะโล/คอทเทจ,บังกะโล,0,,0
+type,bungalow,บังกะโล/คอทเทจ,bungalow,0,,0
+type,bungalow,บังกะโล/คอทเทจ,คอทเทจ,0,,0
+type,bungalow,บังกะโล/คอทเทจ,cottage,0,,0
+type,bungalow,บังกะโล/คอทเทจ,chalet,0,,0
+type,bungalow,บังกะโล/คอทเทจ,ชาเลต์,0,,0
+type,bungalow,บังกะโล/คอทเทจ,บ้านพัก,0,,0
+type,bungalow,บังกะโล/คอทเทจ,cabin,0,,0
+type,camp,แคมป์/แกลมปิ้ง,แคมป์,0,,0
+type,camp,แคมป์/แกลมปิ้ง,camp,0,,0
+type,camp,แคมป์/แกลมปิ้ง,glamping,0,,0
+type,camp,แคมป์/แกลมปิ้ง,แกลมปิ้ง,0,,0
+type,camp,แคมป์/แกลมปิ้ง,เต็นท์,0,,0
+type,hotel,โรงแรม,โรงแรม,0,,0
+type,hotel,โรงแรม,hotel,0,,0
+type,hotel,โรงแรม,โฮเทล,0,,0
+type,hotel,โรงแรม,inn,1,,0
+type,hotel,โรงแรม,lodge,0,,0
+type,hotel,โรงแรม,ลอดจ์,0,,0
+type,hotel,โรงแรม,อินน์,0,,0
+style,sea,ติดทะเล/ชายหาด,ริมทะเล,0,,1
+style,sea,ติดทะเล/ชายหาด,ริมหาด,0,,1
+style,sea,ติดทะเล/ชายหาด,ชายหาด,0,,1
+style,sea,ติดทะเล/ชายหาด,หาด,0,หาดู|หาดี|หาดอก|หาดใหญ่,1
+style,sea,ติดทะเล/ชายหาด,ทะเล,0,ทะเลหมอก|ทะเลสาบ,1
+style,sea,ติดทะเล/ชายหาด,เกาะ,0,,1
+style,sea,ติดทะเล/ชายหาด,beach,0,,1
+style,sea,ติดทะเล/ชายหาด,seaside,0,,1
+style,sea,ติดทะเล/ชายหาด,sea view,0,,1
+style,sea,ติดทะเล/ชายหาด,ocean,0,,1
+style,sea,ติดทะเล/ชายหาด,island,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,ภูเขา,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,วิวเขา,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,ดอย,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,ทะเลหมอก,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,ธรรมชาติ,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,น้ำตก,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,อุทยาน,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,ป่า,0,เป่า|ป่าตอง,1
+style,mountain,ภูเขา/ธรรมชาติ,mountain,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,nature,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,forest,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,waterfall,0,,1
+style,mountain,ภูเขา/ธรรมชาติ,hill,0,chill,1
+style,river,ริมน้ำ/ทะเลสาบ,ริมน้ำ,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,ริมแม่น้ำ,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,แม่น้ำ,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,ริมโขง,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,ริมคลอง,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,ทะเลสาบ,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,อ่างเก็บน้ำ,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,เขื่อน,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,river,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,lake,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,riverside,0,,1
+style,river,ริมน้ำ/ทะเลสาบ,riverfront,0,,1
+style,boutique,บูติก/ดีไซน์,บูติก,0,,0
+style,boutique,บูติก/ดีไซน์,boutique,0,,0
+style,boutique,บูติก/ดีไซน์,ดีไซน์,0,,0
+style,boutique,บูติก/ดีไซน์,design,0,,0
+style,boutique,บูติก/ดีไซน์,loft,0,,0
+style,boutique,บูติก/ดีไซน์,ลอฟท์,0,,0
+style,boutique,บูติก/ดีไซน์,โมเดิร์น,0,,0
+style,boutique,บูติก/ดีไซน์,modern,0,,0
+style,boutique,บูติก/ดีไซน์,มินิมอล,0,,0
+style,boutique,บูติก/ดีไซน์,minimal,0,,0
+style,boutique,บูติก/ดีไซน์,วินเทจ,0,,0
+style,boutique,บูติก/ดีไซน์,vintage,0,,0
+style,boutique,บูติก/ดีไซน์,ร่วมสมัย,0,,0
+style,boutique,บูติก/ดีไซน์,contemporary,0,,0
+style,poolvilla,พูลวิลล่า/สระส่วนตัว,พูลวิลล่า,0,,0
+style,poolvilla,พูลวิลล่า/สระส่วนตัว,pool villa,0,,0
+style,poolvilla,พูลวิลล่า/สระส่วนตัว,private pool,0,,0
+style,poolvilla,พูลวิลล่า/สระส่วนตัว,สระส่วนตัว,0,,0
+style,poolvilla,พูลวิลล่า/สระส่วนตัว,สระว่ายน้ำส่วนตัว,0,,0
+style,luxury,หรู/พรีเมียม,หรู,0,,0
+style,luxury,หรู/พรีเมียม,luxury,0,,0
+style,luxury,หรู/พรีเมียม,premium,0,,0
+style,luxury,หรู/พรีเมียม,พรีเมียม,0,,0
+style,luxury,หรู/พรีเมียม,5 ดาว,0,,0
+style,luxury,หรู/พรีเมียม,five star,0,,0
+style,luxury,หรู/พรีเมียม,five-star,0,,0
+style,luxury,หรู/พรีเมียม,5 star,0,,0
+style,luxury,หรู/พรีเมียม,5-star,0,,0
+style,luxury,หรู/พรีเมียม,ระดับ 5,0,,0
+style,budget,ประหยัด/แบ็คแพ็คเกอร์,ประหยัด,0,,0
+style,budget,ประหยัด/แบ็คแพ็คเกอร์,budget,0,,0
+style,budget,ประหยัด/แบ็คแพ็คเกอร์,backpack,0,,0
+style,budget,ประหยัด/แบ็คแพ็คเกอร์,แบ็คแพ็ค,0,,0
+style,budget,ประหยัด/แบ็คแพ็คเกอร์,แบกเป้,0,,0
+style,budget,ประหยัด/แบ็คแพ็คเกอร์,dorm,0,,0
+style,budget,ประหยัด/แบ็คแพ็คเกอร์,เตียงรวม,0,,0
+style,budget,ประหยัด/แบ็คแพ็คเกอร์,ราคาถูก,0,,0
+style,budget,ประหยัด/แบ็คแพ็คเกอร์,cheap,0,,0
+style,community,ชุมชน/เกษตร/วิถีชีวิต,ชุมชน,0,,0
+style,community,ชุมชน/เกษตร/วิถีชีวิต,วิถีชีวิต,0,,0
+style,community,ชุมชน/เกษตร/วิถีชีวิต,เกษตร,0,,0
+style,community,ชุมชน/เกษตร/วิถีชีวิต,ฟาร์ม,0,,0
+style,community,ชุมชน/เกษตร/วิถีชีวิต,สวน,0,สวนหย่อม|สวนสาธารณะ,0
+style,community,ชุมชน/เกษตร/วิถีชีวิต,farm,0,,0
+style,community,ชุมชน/เกษตร/วิถีชีวิต,community,0,,0
+style,community,ชุมชน/เกษตร/วิถีชีวิต,local life,0,,0
+style,community,ชุมชน/เกษตร/วิถีชีวิต,village,0,,0
+style,camp,แคมป์/แกลมปิ้ง,แคมป์,0,,0
+style,camp,แคมป์/แกลมปิ้ง,camp,0,,0
+style,camp,แคมป์/แกลมปิ้ง,glamping,0,,0
+style,camp,แคมป์/แกลมปิ้ง,แกลมปิ้ง,0,,0
+style,camp,แคมป์/แกลมปิ้ง,เต็นท์,0,,0
+style,camp,แคมป์/แกลมปิ้ง,tent,0,,0
+style,camp,แคมป์/แกลมปิ้ง,โดม,0,,0
+style,wellness,สปา/เวลเนส,สปา,0,,0
+style,wellness,สปา/เวลเนส,spa,1,,0
+style,wellness,สปา/เวลเนส,wellness,0,,0
+style,wellness,สปา/เวลเนส,เวลเนส,0,,0
+style,wellness,สปา/เวลเนส,นวด,0,,0
+style,wellness,สปา/เวลเนส,massage,0,,0
+style,wellness,สปา/เวลเนส,โยคะ,0,,0
+style,wellness,สปา/เวลเนส,yoga,0,,0
+style,wellness,สปา/เวลเนส,detox,0,,0
+style,wellness,สปา/เวลเนส,ดีท็อกซ์,0,,0
+style,family,ครอบครัว/กลุ่ม,ครอบครัว,0,,0
+style,family,ครอบครัว/กลุ่ม,family,0,,0
+style,family,ครอบครัว/กลุ่ม,เด็ก,0,,0
+style,family,ครอบครัว/กลุ่ม,kids,0,,0
+style,family,ครอบครัว/กลุ่ม,หมู่คณะ,0,,0
+style,family,ครอบครัว/กลุ่ม,กลุ่มใหญ่,0,,0
+style,family,ครอบครัว/กลุ่ม,group,0,,0
+style,business,ประชุม/ธุรกิจ,ห้องประชุม,0,,0
+style,business,ประชุม/ธุรกิจ,สัมมนา,0,,0
+style,business,ประชุม/ธุรกิจ,meeting,0,,0
+style,business,ประชุม/ธุรกิจ,conference,0,,0
+style,business,ประชุม/ธุรกิจ,ธุรกิจ,0,,0
+style,business,ประชุม/ธุรกิจ,business,0,,0
+style,business,ประชุม/ธุรกิจ,mice,0,,0
+style,business,ประชุม/ธุรกิจ,ห้องจัดเลี้ยง,0,,0
+style,business,ประชุม/ธุรกิจ,banquet,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,bts,1,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,mrt,1,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,รถไฟฟ้า,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,สนามบิน,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,airport,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,สถานีรถไฟ,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,สถานีขนส่ง,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,train station,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,ใจกลางเมือง,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,downtown,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,city center,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,city centre,0,,0
+style,city,ใจกลางเมือง/ใกล้ขนส่ง,ห้างสรรพสินค้า,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,ประวัติศาสตร์,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,วัฒนธรรม,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,heritage,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,โบราณ,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,ล้านนา,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,เรือนไทย,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,ไทยโบราณ,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,ancient,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,historic,0,,0
+style,culture,วัฒนธรรม/ประวัติศาสตร์,traditional thai,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),ดำน้ำ,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),ไดฟ์,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),dive,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),diving,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),กอล์ฟ,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),golf,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),ล่องแก่ง,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),เดินป่า,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),trek,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),snorkel,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),kayak,0,,0
+style,activity,กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า),พายเรือ,0,,0

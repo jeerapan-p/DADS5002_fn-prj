@@ -2133,52 +2133,40 @@ window.openStory=function(){if(!RAW.length)return;init();if(!built){build();buil
 </script>
 <script>
 /* ---------- สไตล์ที่เหมาะกับจังหวัด (อ่านจาก lodging.csv) ----------
-   ปรับคำสำคัญ/สไตล์ได้ที่ STYLE_CFG ด้านล่าง ส่วนที่เหลือคำนวณจากไฟล์ทั้งหมด
+   คำสำคัญและกลุ่มอยู่ใน style_keywords.csv (kind,group_key,group_name,keyword,whole,except,geo) เกณฑ์ต่าง ๆ ปรับที่ STYLE_CFG ด้านล่าง
    ไฟล์ lodging.csv ต้องมีคอลัมน์: Name, Detail, Latitude, Longitude, District, Province (ID และ URL ไม่บังคับ) */
 (function(){
 const {A,init,seg,setSeg,f0,fn,med}=HX;
 const STYLE_CFG={
   file:'lodging.csv',
   alias:{'กรุงเทพมหานคร':'กทม.','กรุงเทพฯ':'กทม.','พระนครศรีอยุธยา':'อยุธยา'},
-  /* ประเภท: ดูจากชื่อที่พักเท่านั้น เลือกข้อแรกที่ตรง */
-  types:[
-    {k:'hostel',n:'โฮสเทล',re:'โฮสเทล|hostel|poshtel|โพสเทล'},
-    {k:'homestay',n:'โฮมสเตย์',re:'โฮมสเตย์|homestay|โฮมสเตย'},
-    {k:'guest',n:'เกสท์เฮ้าส์',re:'เกสท์เฮ้าส์|เกสต์เฮ้าส์|เกสท์เฮาส์|เกสต์เฮาส์|guest ?house|guesthouse'},
-    {k:'apt',n:'อพาร์ทเมนท์/เซอร์วิส',re:'อพาร์ท|อพาร์ต|apartment|serviced|เซอร์วิส'},
-    {k:'resort',n:'รีสอร์ท',re:'รีสอร์ท|รีสอร์ต|resort'},
-    {k:'villa',n:'วิลล่า',re:'วิลล่า|villa'},
-    {k:'bungalow',n:'บังกะโล/คอทเทจ',re:'บังกะโล|bungalow|คอทเทจ|cottage|chalet|ชาเลต์|บ้านพัก|cabin'},
-    {k:'camp',n:'แคมป์/แกลมปิ้ง',re:'แคมป์|camp|glamping|แกลมปิ้ง|เต็นท์'},
-    {k:'hotel',n:'โรงแรม',re:'โรงแรม|hotel|โฮเทล|inn\\b|lodge|ลอดจ์|อินน์'}],
-  otherType:'ไม่ระบุประเภท',
-  /* สไตล์/จุดขาย: ดูจากชื่อ+คำบรรยาย ที่พักหนึ่งแห่งมีได้หลายสไตล์ geo=true คือสไตล์ที่ผูกกับทำเล (ต้องมีทำเลนั้นในจังหวัดก่อนจึงแนะนำ) */
-  styles:[
-    {k:'sea',n:'ติดทะเล/ชายหาด',geo:true,re:'ริมทะเล|ริมหาด|ชายหาด|หาด|ทะเล(?!หมอก|สาบ)|เกาะ|beach|seaside|sea view|ocean|island'},
-    {k:'mountain',n:'ภูเขา/ธรรมชาติ',geo:true,re:'ภูเขา|วิวเขา|ดอย|ทะเลหมอก|ธรรมชาติ|น้ำตก|อุทยาน|ป่า|mountain|nature|forest|waterfall|hill'},
-    {k:'river',n:'ริมน้ำ/ทะเลสาบ',geo:true,re:'ริมน้ำ|ริมแม่น้ำ|แม่น้ำ|ริมโขง|ริมคลอง|ทะเลสาบ|อ่างเก็บน้ำ|เขื่อน|river|lake|riverside|riverfront'},
-    {k:'boutique',n:'บูติก/ดีไซน์',re:'บูติก|boutique|ดีไซน์|design|loft|ลอฟท์|โมเดิร์น|modern|มินิมอล|minimal|วินเทจ|vintage|ร่วมสมัย|contemporary'},
-    {k:'poolvilla',n:'พูลวิลล่า/สระส่วนตัว',re:'พูลวิลล่า|pool villa|private pool|สระส่วนตัว|สระว่ายน้ำส่วนตัว'},
-    {k:'luxury',n:'หรู/พรีเมียม',re:'หรู|luxury|premium|พรีเมียม|5 ดาว|five.star|5.star|ระดับ 5'},
-    {k:'budget',n:'ประหยัด/แบ็คแพ็คเกอร์',re:'ประหยัด|budget|backpack|แบ็คแพ็ค|แบกเป้|dorm|เตียงรวม|ราคาถูก|cheap'},
-    {k:'community',n:'ชุมชน/เกษตร/วิถีชีวิต',re:'ชุมชน|วิถีชีวิต|เกษตร|ฟาร์ม|สวน|farm|community|local life|village'},
-    {k:'camp',n:'แคมป์/แกลมปิ้ง',re:'แคมป์|camp|glamping|แกลมปิ้ง|เต็นท์|tent|โดม'},
-    {k:'wellness',n:'สปา/เวลเนส',re:'สปา|spa|wellness|เวลเนส|นวด|massage|โยคะ|yoga|detox|ดีท็อกซ์'},
-    {k:'family',n:'ครอบครัว/กลุ่ม',re:'ครอบครัว|family|เด็ก|kids|หมู่คณะ|กลุ่มใหญ่|group'},
-    {k:'business',n:'ประชุม/ธุรกิจ',re:'ห้องประชุม|สัมมนา|meeting|conference|ธุรกิจ|business|mice|ห้องจัดเลี้ยง|banquet'},
-    {k:'city',n:'ใจกลางเมือง/ใกล้ขนส่ง',re:'\\bbts\\b|\\bmrt\\b|รถไฟฟ้า|สนามบิน|airport|สถานีรถไฟ|สถานีขนส่ง|train station|ใจกลางเมือง|downtown|city center|city centre|ห้างสรรพสินค้า'},
-    {k:'culture',n:'วัฒนธรรม/ประวัติศาสตร์',re:'ประวัติศาสตร์|วัฒนธรรม|heritage|โบราณ|ล้านนา|เรือนไทย|ไทยโบราณ|ancient|historic|traditional thai'},
-    {k:'activity',n:'กิจกรรม (ดำน้ำ กอล์ฟ เดินป่า)',re:'ดำน้ำ|ไดฟ์|dive|diving|กอล์ฟ|golf|ล่องแก่ง|เดินป่า|trek|snorkel|kayak|พายเรือ'}],
+  kwFile:'style_keywords.csv',   // ตารางคำสำคัญ → กลุ่ม (แก้ไฟล์นี้ได้โดยไม่ต้องแตะโค้ด)
   topPeers:8,        // จำนวนจังหวัดเทียบเคียง
   minBench:0.03,     // ต้องมีสัดส่วนในกลุ่มเทียบเคียงอย่างน้อยเท่านี้จึงเสนอ
   minBenchCount:6,   // และอย่างน้อยกี่แห่ง
   geoMin:3,          // สไตล์ผูกทำเล: ต้องมีอย่างน้อยกี่แห่งในจังหวัดจึงถือว่ามีทำเล
+  geoMinShare:0.05,   // และต้องคิดเป็นสัดส่วนอย่างน้อยเท่านี้ของที่พักในจังหวัด (กันคำเปรียบเปรย/ชื่อหมู่บ้านที่บังเอิญตรง)
   smallN:30          // ต่ำกว่านี้ถือว่าตัวอย่างน้อย
 };
-const C=STYLE_CFG,TY=C.types.map(t=>({...t,key:'t:'+t.k,grp:'ประเภท',rx:new RegExp(t.re,'i')})),ST=C.styles.map(t=>({...t,key:'s:'+t.k,grp:'สไตล์',rx:new RegExp(t.re,'i')})),ALL=[...TY,...ST];
-const KI={};ALL.forEach(k=>KI[k.key]=k);
+const C=STYLE_CFG;let TY=[],ST=[],ALL=[],KI={},DICT=[];
+const esc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+function setup(rows){
+  const gs=new Map();DICT=[];
+  rows.forEach(r=>{const kind=String(r.kind||'').trim(),gk=String(r.group_key||'').trim(),kw=String(r.keyword||'').trim().toLowerCase();if(!kind||!gk||!kw)return;
+    const key=(kind==='type'?'t:':'s:')+gk;
+    if(!gs.has(key))gs.set(key,{key,k:gk,kind,n:String(r.group_name||gk).trim(),grp:kind==='type'?'ประเภท':'สไตล์',geo:false,kws:[]});
+    const g=gs.get(key);if(String(r.geo).trim()==='1')g.geo=true;
+    const ex=String(r.except||'').split('|').map(x=>x.trim().toLowerCase()).filter(Boolean),whole=String(r.whole).trim()==='1';
+    const o={kw,whole,ex,g,hits:0,exs:[],snips:[],rx:whole?new RegExp('\\b'+esc(kw)+'\\b'):null};g.kws.push(o);DICT.push(o)});
+  ALL=[...gs.values()];TY=ALL.filter(g=>g.kind==='type');ST=ALL.filter(g=>g.kind==='style');KI={};ALL.forEach(g=>KI[g.key]=g);
+}
+function kwHit(o,text){let t=text;for(const e of o.ex)if(t.includes(e))t=t.split(e).join(' ');
+  if(o.rx){const m=o.rx.exec(t);return m?[m.index,t]:null}const i=t.indexOf(o.kw);return i<0?null:[i,t]}
+function matchGroup(g,text,name){let any=false;
+  for(const o of g.kws){const h=kwHit(o,text);if(h){any=true;o.hits++;if(o.exs.length<2)o.exs.push(name);if(o.snips.length<2)o.snips.push(h[1].slice(Math.max(0,h[0]-14),h[0]+o.kw.length+14).replace(/\s+/g,' '))}}
+  return any}
 const FILT={n:'ไม่ระบุประเภท'};
-const SS={mode:'prov',prov:null,key:'s:boutique',w:50,show:'s:boutique'};
+const SS={mode:'prov',prov:null,key:'s:boutique',w:50,show:'s:boutique',ds:'file',dg:''};
 let built=false,LS=null,NAT=null,BP={},PROFILE={},OPP={},LERR=null,STATS={};
 const g=(r,...ks)=>{for(const k of ks)if(r[k]!==undefined&&r[k]!=='')return r[k];return ''};
 const pctf=(x,d=1)=>fn(x*100,d)+'%';
@@ -2192,7 +2180,8 @@ function process(rows){
     const name=String(g(r,'Name','ชื่อ')),det=String(g(r,'Detail','รายละเอียด')),lat=parseFloat(g(r,'Latitude')),lon=parseFloat(g(r,'Longitude'));
     const id=g(r,'ID')||name+'|'+pv+'|'+lat;if(seen.has(id)){dup++;continue}seen.add(id);
     const nm=name.toLowerCase(),tx=(name+' '+det).toLowerCase();
-    const ty=TY.find(t=>t.rx.test(nm)),tags=ST.filter(s=>s.rx.test(tx)).map(s=>s.key);
+    let ty=null;for(const t of TY)if(matchGroup(t,nm,name)&&!ty)ty=t;
+    const tags=ST.filter(g=>matchGroup(g,tx,name)).map(g=>g.key);
     if(!isFinite(lat)||!isFinite(lon))bad++;
     items.push({id,name,pv,d:String(g(r,'District')).trim(),lat,lon,url:g(r,'URL'),type:ty?ty.key:'t:other',tags});
   }
@@ -2220,7 +2209,7 @@ function bench(p){
 function stat(p,k){
   const o=LS.by[p]||{n:0,c:{}},b=bench(p),own=share(o,k),nat=share(LS.nat,k),bs=b.pooled.n?share(b.pooled,k):nat,bc=b.pooled.n?(b.pooled.c[k]||0):0;
   const sd=Math.sqrt(Math.max(bs*(1-bs),.0004)/Math.max(o.n,1)),z=(bs-own)/sd;
-  const key=KI[k],geoBlock=!!(key&&key.geo)&&(o.c[k]||0)<C.geoMin;
+  const key=KI[k],geoBlock=!!(key&&key.geo)&&((o.c[k]||0)<C.geoMin||own<C.geoMinShare);
   const ok=!geoBlock&&bs>=C.minBench&&bc>=C.minBenchCount&&o.n>0;
   return {k,own,nat,bs,bc,cnt:o.c[k]||0,n:o.n,z,geoBlock,ok,gap:bs-own,hasBench:b.pooled.n>0};
 }
@@ -2241,16 +2230,25 @@ function build(){
     <div class="ctl"><div class="g"><span>มุมมอง</span>${seg('y-mode',[{k:'prov',n:'เลือกจังหวัด → ดูสไตล์ที่เหมาะ'},{k:'style',n:'เลือกสไตล์ → ดูจังหวัดที่เหมาะ'}])}</div></div>
     <p class="n" id="y-status" style="margin-top:10px"></p></div>
   <div id="y-body"></div>
+  <div class="card"><h2>ตารางคำสำคัญ → กลุ่ม</h2><p class="n" style="margin:4px 0 10px">คำที่ใช้จัดที่พักเข้ากลุ่ม อ่านจากไฟล์ <code>${C.kwFile}</code> ที่พักหนึ่งแห่งเข้ากลุ่มสไตล์ได้หลายกลุ่ม ส่วนประเภทเลือกกลุ่มแรกที่ตรงจากชื่อเท่านั้น คอลัมน์ "จับได้" นับที่พักที่มีคำนั้น และ "ยกเว้นเมื่อ" คือคำที่ถ้าคำสำคัญไปอยู่ในนั้นจะไม่นับ (เช่น "หาด" ใน "หาดู") ตัวอย่างข้อความรอบคำไว้ตรวจว่าจับถูกความหมายไหม คำที่จับได้ 0 อาจสะกดต่างจากข้อมูลจริง</p>
+    <div class="ctl"><div class="g"><span>แสดงกลุ่ม</span><select id="y-dg" class="sm"><option value="">ทั้งหมด</option>${ALL.map(g=>`<option value="${g.key}">${g.grp}: ${g.n}</option>`).join('')}</select></div>
+    <div class="g"><span>เรียงตาม</span>${seg('y-ds',[{k:'file',n:'ลำดับในไฟล์'},{k:'hits',n:'จับได้มากสุด'}])}</div></div>
+    <div class="scroll" id="y-dict" style="max-height:520px;margin-top:10px"></div></div>
   <div class="card"><h2>วิธีคิดและข้อจำกัด</h2><ul style="margin:6px 0 0;padding-left:18px;color:var(--ink2);font-size:13px;line-height:1.7">
     <li><b>กลุ่มเทียบเคียง</b> คือ ${C.topPeers} จังหวัดที่มีขนาดตลาด อัตราเข้าพัก วันพักเฉลี่ย และคนต่อห้องใกล้เคียงที่สุด แล้วเลือกครึ่งที่อัตราเข้าพักสูงกว่ามาเป็นเกณฑ์ว่า "สไตล์แบบไหนอยู่ร่วมกับผลงานดี" นี่เป็นความสัมพันธ์ ไม่ใช่การพิสูจน์ว่าสไตล์นั้นทำให้ผลงานดี</li>
     <li><b>ความน่าเชื่อถือ</b> ใช้ค่า z ของส่วนต่างสัดส่วน ซึ่งคำนึงถึงจำนวนที่พักในจังหวัด ถ้าจังหวัดมีที่พักในไฟล์น้อย (ต่ำกว่า ${C.smallN} แห่ง) จะมีป้ายเตือนและคำแนะนำควรอ่านอย่างระวัง</li>
     <li><b>ไฟล์ไม่ครอบคลุมที่พักทั้งหมด</b> จึงใช้ "สัดส่วนสไตล์ภายในจังหวัด" ไม่ใช่จำนวนซัพพลายจริง ตัวชี้วัด "ครอบคลุม" เทียบจำนวนที่พักในไฟล์กับจำนวนแห่งในสถิติรายปีล่าสุด ถ้าต่ำมากสัดส่วนอาจเอนเอียง</li>
     <li><b>สไตล์ได้จากการจับคำสำคัญ</b> ไม่ใช่ข้อมูลยืนยัน อาจจับผิดหรือพลาด (เช่น คำว่า "สวน" ในชื่อสถานที่) ตัวอย่างที่แสดงในแต่ละคำแนะนำมีไว้ให้ตรวจสอบ คำสำคัญทั้งหมดดูได้ด้านล่าง และแก้ได้ที่ STYLE_CFG ในโค้ด</li>
-    <li>สไตล์ที่ผูกกับทำเล (ทะเล ภูเขา ริมน้ำ) จะแนะนำเฉพาะจังหวัดที่มีที่พักสไตล์นั้นอยู่แล้วอย่างน้อย ${C.geoMin} แห่ง เพื่อไม่แนะนำที่พักริมทะเลในจังหวัดที่ไม่มีทะเล</li>
+    <li>สไตล์ที่ผูกกับทำเล (ทะเล ภูเขา ริมน้ำ) จะแนะนำเฉพาะจังหวัดที่มีที่พักสไตล์นั้นอยู่แล้วอย่างน้อย ${C.geoMin} แห่งและไม่ต่ำกว่า ${pctf(C.geoMinShare,0)} ของที่พักในจังหวัด เพื่อไม่แนะนำที่พักริมทะเลในจังหวัดที่ไม่มีทะเล</li>
     <li>ไฟล์ไม่มีราคา จำนวนห้อง หรือรีวิว จึงบอกไม่ได้ว่าสไตล์ไหนกำไรดี คะแนนตลาดมาจากแท็บโอกาสลงทุน (ใช้ชุดน้ำหนักที่ตั้งไว้ตอนนั้น)</li></ul>
-    <details style="margin-top:12px"><summary style="cursor:pointer;color:var(--accent);font-size:13px">ดูคำสำคัญที่ใช้จัดประเภทและสไตล์</summary><div id="y-dict" style="font-size:12px;color:var(--ink2);line-height:1.7;margin-top:8px"></div></details></div>`;
-  $('#y-dict').innerHTML=`<p><b>ประเภท</b> (ดูจากชื่อ ข้อแรกที่ตรง):</p><ul>${TY.map(t=>`<li><b>${t.n}</b>: ${t.re.replace(/\|/g,' · ')}</li>`).join('')}</ul><p><b>สไตล์</b> (ดูจากชื่อ+คำบรรยาย):</p><ul>${ST.map(t=>`<li><b>${t.n}</b>${t.geo?' (ผูกทำเล)':''}: ${t.re.replace(/\|/g,' · ')}</li>`).join('')}</ul>`;
+</ul></div>`;
+  document.querySelectorAll('#y-ds button').forEach(b=>b.onclick=()=>{SS.ds=b.dataset.v;renderDict()});$('#y-dg').onchange=e=>{SS.dg=e.target.value;renderDict()};
   document.querySelectorAll('#y-mode button').forEach(b=>b.onclick=()=>{SS.mode=b.dataset.v;draw()});
+}
+function renderDict(){
+  setSeg('y-ds',SS.ds);$('#y-dg').value=SS.dg;
+  let L=DICT.filter(o=>!SS.dg||o.g.key===SS.dg);if(SS.ds==='hits')L=[...L].sort((a,b)=>b.hits-a.hits);
+  $('#y-dict').innerHTML=`<table class="cmp" style="min-width:700px"><thead><tr><th style="text-align:left">กลุ่ม</th><th style="text-align:left">คำสำคัญ</th><th style="text-align:left">ยกเว้นเมื่อ</th><th>จับได้</th><th style="text-align:left">ตัวอย่างข้อความรอบคำ</th></tr></thead><tbody>${L.map(o=>`<tr><td style="text-align:left;white-space:nowrap">${o.g.grp}: ${o.g.n}${o.g.geo?' (ทำเล)':''}</td><td style="text-align:left"><b>${o.kw}</b>${o.whole?' <small style="color:var(--ink3)">(ทั้งคำ)</small>':''}</td><td style="text-align:left;color:var(--ink3)">${o.ex.join(', ')||'–'}</td><td ${o.hits?'':'style="color:var(--d1)"'}><b>${o.hits}</b></td><td style="text-align:left;font-size:12px;color:var(--ink2)">${o.snips.map(x=>'…'+x.replace(/</g,'&lt;')+'…').join('<br>')||'–'}</td></tr>`).join('')}</tbody></table>`;
 }
 function status(){
   const a=LS;let t=`อ่านแล้ว ${f0(a.items.length)} แห่ง จาก ${f0(a.rows)} แถว ครอบคลุม ${Object.keys(a.by).length} จังหวัด`;
@@ -2313,7 +2311,7 @@ function drawStyle(){
   el.sort((a,b)=>b.fit-a.fit);
   html.push(`<div class="card"><div class="ctl"><div class="g"><span>สไตล์/ประเภท</span><select id="y-k" class="sm">${['ประเภท','สไตล์'].map(gp=>`<optgroup label="${gp}">${ALL.filter(x=>x.grp===gp&&x.key!=='t:other').map(x=>`<option value="${x.key}" ${x.key===key?'selected':''}>${x.n}</option>`).join('')}</optgroup>`).join('')}</select></div>
     <div class="g" style="min-width:260px"><span>น้ำหนัก: ตลาดน่าสนใจ ${SS.w}% · ช่องว่างสไตล์ ${100-SS.w}%</span><input type="range" id="y-w" min="0" max="100" step="10" value="${SS.w}" aria-label="น้ำหนักตลาดเทียบช่องว่าง"></div></div>
-    <p class="n" style="margin:10px 0 0">ภาพรวมทั้งประเทศ: ${k.n} คิดเป็น <b>${pctf(share(LS.nat,key))}</b> ของที่พักในไฟล์ (${f0(LS.nat.c[key]||0)} แห่ง) · ${k.geo?'สไตล์นี้ผูกทำเล จึงตัดจังหวัดที่ยังไม่มีสไตล์นี้อย่างน้อย '+C.geoMin+' แห่งออก':'ไม่ผูกทำเล'}</p></div>`);
+    <p class="n" style="margin:10px 0 0">ภาพรวมทั้งประเทศ: ${k.n} คิดเป็น <b>${pctf(share(LS.nat,key))}</b> ของที่พักในไฟล์ (${f0(LS.nat.c[key]||0)} แห่ง) · ${k.geo?'สไตล์นี้ผูกทำเล จึงตัดจังหวัดที่ยังไม่มีสไตล์นี้อย่างน้อย '+C.geoMin+' แห่งและไม่ต่ำกว่า '+pctf(C.geoMinShare,0)+' ของที่พักในจังหวัดออก':'ไม่ผูกทำเล'}</p></div>`);
   html.push(`<div class="card"><h2>จังหวัดที่เหมาะกับ "${k.n}" มากที่สุด</h2><p class="n">คะแนนจับคู่ = น้ำหนักตลาด × คะแนนโอกาสลงทุน + น้ำหนักช่องว่าง × เปอร์เซ็นไทล์ของช่องว่างสไตล์ (เฉพาะจังหวัดที่อยู่ในการจัดอันดับโอกาสลงทุน ${el.length} จังหวัด) กดแถวเพื่อดูรายละเอียดจังหวัด</p>
    <div class="scroll"><table class="cmp" style="min-width:640px"><thead><tr><th style="text-align:left">จังหวัด</th><th>คะแนนจับคู่</th><th>โอกาสลงทุน</th><th>สัดส่วนในจังหวัด</th><th>กลุ่มเทียบเคียง</th><th>ช่องว่าง (จุด)</th><th>ที่พักในไฟล์</th></tr></thead><tbody>${el.slice(0,15).map((r,i)=>`<tr class="yp" data-p="${r.p}" style="cursor:pointer"><td style="text-align:left">${i+1}. ${r.p}${r.small?' <span title="ตัวอย่างน้อย" style="color:var(--d1)">⚠</span>':''}</td><td><b>${fn(r.fit,0)}</b></td><td>${fn(r.op,0)}</td><td>${pctf(r.own)}</td><td>${pctf(r.bs)}</td><td>${r.good?'<b>'+fn(r.gap*100,1)+'</b>':'<span style="color:var(--ink3)">'+fn(r.gap*100,1)+'</span>'}</td><td>${r.n}</td></tr>`).join('')}</tbody></table></div>
    <p class="n" style="margin-top:8px">⚠ = ที่พักในไฟล์น้อยกว่า ${C.smallN} แห่ง · ช่องว่างตัวหนา = ผ่านเกณฑ์หลักฐานขั้นต่ำ (สัดส่วนกลุ่มเทียบเคียงอย่างน้อย ${pctf(C.minBench,0)} และอย่างน้อย ${C.minBenchCount} แห่ง)</p>
@@ -2334,11 +2332,12 @@ function init2(){
 let loadP=null;
 window.openStyle=function(){
   if(!RAW.length)return;init();
-  if(!loadP)loadP=fetch(C.file).then(r=>{if(!r.ok)throw new Error(r.status);return r.text()}).then(t=>parseCSV(t));
-  loadP.then(rows=>{
-    if(!built){LERR=rows;init2();build();built=true;status()}
+  const ld=f=>fetch(f).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.text()}).then(t=>parseCSV(t));
+  if(!loadP)loadP=Promise.all([ld(C.file),ld(C.kwFile)]);
+  loadP.then(([rows,kw])=>{
+    if(!built){setup(kw);LERR=rows;init2();build();built=true;status();renderDict()}
     draw();
-  }).catch(e=>{loadP=null;$('#styleview').innerHTML=`<div class="err"><b>อ่านไฟล์ ${C.file} ไม่ได้</b><br>ไฟล์นี้ต้องอยู่โฟลเดอร์เดียวกับหน้าเว็บ และเปิดผ่านเว็บเซิร์ฟเวอร์ (ไม่ใช่ file://) แท็บอื่นยังใช้งานได้ตามปกติ</div>`});
+  }).catch(e=>{loadP=null;$('#styleview').innerHTML=`<div class="err"><b>อ่านไฟล์ข้อมูลที่พักไม่ได้</b> (${String(e.message||e)})<br>ต้องมีไฟล์ ${C.file} และ ${C.kwFile} อยู่โฟลเดอร์เดียวกับหน้าเว็บ และเปิดผ่านเว็บเซิร์ฟเวอร์ (ไม่ใช่ file://) แท็บอื่นยังใช้งานได้ตามปกติ</div>`});
 };
 })();
 </script>
